@@ -24,6 +24,7 @@ dependencies {
 	compileOnly("org.projectlombok:lombok:1.18.30")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-devtools")
+	runtimeOnly("org.postgresql:postgresql:42.6.0")
 
 }
 
