@@ -1,6 +1,6 @@
 FROM eclipse-temurin:20-jdk
 
-ARG GRADLE_VERSION=8.3
+ARG GRADLE_VERSION=8.5
 
 RUN apt-get update && apt-get install -yq unzip
 
@@ -18,6 +18,6 @@ WORKDIR /app
 
 COPY /app .
 
-RUN gradle installDist
+RUN ./gradlew build
 
-CMD ./build/install/app/bin/app
+CMD java -jar build/libs/app-0.0.1-SNAPSHOT.jar
