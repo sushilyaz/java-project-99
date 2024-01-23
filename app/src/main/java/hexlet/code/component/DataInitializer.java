@@ -23,8 +23,10 @@ public class DataInitializer implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         var email = "hexlet@example.com";
 
-        if (userRepository.findByEmail(email).isPresent()) {
+        if (userRepository.findByEmail(email).isEmpty()) {
             var userData = new UserCreateDTO();
+            userData.setFirstName("Main");
+            userData.setLastName("Admin");
             userData.setEmail(email);
             userData.setPassword("qwerty");
             userService.createUser(userData);
