@@ -1,6 +1,7 @@
 package hexlet.code.component;
 
 import hexlet.code.dto.UserCreateDTO;
+import hexlet.code.repository.UserRepository;
 import hexlet.code.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +16,21 @@ public class DataInitializer implements ApplicationRunner {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         var email = "hexlet@example.com";
-        var userData = new UserCreateDTO();
-        userData.setEmail(email);
-        userData.setPassword("qwerty");
-        userService.createUser(userData);
+
+        if (userRepository.findByEmail(email).isPresent()) {
+            var userData = new UserCreateDTO();
+            userData.setEmail(email);
+            userData.setPassword("qwerty");
+            userService.createUser(userData);
+        } else {
+            System.out.println("User with email " + email + " already exists.");
+        }
     }
 }
+
