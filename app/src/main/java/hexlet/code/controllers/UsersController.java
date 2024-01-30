@@ -4,9 +4,11 @@ import hexlet.code.dto.UserCreateDTO;
 import hexlet.code.dto.UserDTO;
 import hexlet.code.dto.UserUpdateDTO;
 import hexlet.code.service.UserService;
+import hexlet.code.util.UserUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/users")
@@ -25,6 +28,9 @@ public class UsersController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserUtils userUtils;
 
     @GetMapping(path = "")
     public List<UserDTO> index() {
@@ -43,14 +49,34 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public UserDTO update (@RequestBody @Valid UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
-        return userService.updateUser(userUpdateDTO, id);
+    public ResponseEntity<UserDTO> update (@RequestBody @Valid UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
+        var currentUser = userUtils.getCurrentUser();
+        var user = new UserDTO();
+        if (Objects.equals(currentUser.getId(), id)) {
+            userService.updateUser(userUpdateDTO, id);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .build();
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void destroy (@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<UserDTO> destroy (@PathVariable Long id) {
+        var currentUser = userUtils.getCurrentUser();
+
+        if (Objects.equals(currentUser.getId(), id)) {
+            userService.deleteUser(id);
+            return ResponseEntity
+                    .status(HttpStatus.NO_CONTENT)
+                    .build();
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .build();
+        }
     }
 }
