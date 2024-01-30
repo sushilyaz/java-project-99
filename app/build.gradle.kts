@@ -47,7 +47,6 @@ dependencies {
 
 
 }
-
 tasks.test {
 	useJUnitPlatform()
 	testLogging {
@@ -60,5 +59,10 @@ tasks.test {
 tasks.jacocoTestReport {
 	reports {
 		xml.required = true
+	}
+}
+buildscript {
+	repositories {
+		mavenCentral()
 	}
 }

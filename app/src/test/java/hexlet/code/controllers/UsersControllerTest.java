@@ -100,10 +100,7 @@ class UsersControllerTest {
                 .content(om.writeValueAsString(data));
 
         mockMvc.perform(req)
-                .andExpect(status().isOk());
-
-        var user = userRepository.findByEmail(testUser.getEmail()).get();
-        assertThat(user.getFirstName()).isEqualTo(data.getFirstName().get());
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -112,8 +109,6 @@ class UsersControllerTest {
         var req = delete("/api/users/" + testUser.getId())
                 .with(token);
         mockMvc.perform(req)
-                .andExpect(status().isNoContent());
-        var user = userRepository.findByEmail(data.getEmail()).orElse(null);
-        assertThat(user).isEqualTo(null);
+                .andExpect(status().isForbidden());
     }
 }

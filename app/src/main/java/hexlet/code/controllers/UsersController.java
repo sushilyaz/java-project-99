@@ -33,8 +33,12 @@ public class UsersController {
     private UserUtils userUtils;
 
     @GetMapping(path = "")
-    public List<UserDTO> index() {
-        return userService.getAllUser();
+    public ResponseEntity<List<UserDTO>> index() {
+        var users = userService.getAllUser();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("X-Total-Count", String.valueOf(users.size()))
+                .body(users);
     }
 
     @GetMapping(path = "/{id}")
@@ -49,9 +53,8 @@ public class UsersController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDTO> update (@RequestBody @Valid UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
+    public ResponseEntity<UserDTO> update(@RequestBody @Valid UserUpdateDTO userUpdateDTO, @PathVariable Long id) {
         var currentUser = userUtils.getCurrentUser();
-        var user = new UserDTO();
         if (Objects.equals(currentUser.getId(), id)) {
             userService.updateUser(userUpdateDTO, id);
             return ResponseEntity
@@ -65,7 +68,7 @@ public class UsersController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<UserDTO> destroy (@PathVariable Long id) {
+    public ResponseEntity<UserDTO> destroy(@PathVariable Long id) {
         var currentUser = userUtils.getCurrentUser();
 
         if (Objects.equals(currentUser.getId(), id)) {
