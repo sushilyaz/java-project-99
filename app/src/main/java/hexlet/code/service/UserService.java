@@ -47,7 +47,7 @@ public class UserService implements UserDetailsService {
         userRepository.save(user);
         return userMapper.map(user);
     }
-// $2a$10$0Pw6XuHYnFzzjNMLJX0poeULcKxBWqPxRo2CKBFLDNfCjmKRE6qeS
+
     public UserDTO updateUser(UserUpdateDTO userUpdateDTO, Long id) {
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id " + id + "not found"));
